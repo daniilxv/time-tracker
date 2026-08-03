@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Container, Button, Typography, Box } from '@mui/material'
 import TaskList from './components/TaskList'
 import TaskModal from './components/TaskModal'
+import ConfirmDialog from './components/ConfirmDialog'
 import './App.css'
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
+  const [taskToDelete, setTaskToDelete] = useState(null);
 
   const handleOpenModal = (task = null) => {
     setEditingTask(task);
@@ -37,8 +39,20 @@ function App() {
     handleCloseModal();
   };
 
-  const handleDeleteTask = (id) => {
-    setTasks(tasks.filter(t => t.id !== id));
+  const requestDeleteTask = (id) => {
+    const task = tasks.find(t => t.id === id);
+    setTaskToDelete(task);
+  };
+
+  const confirmDeleteTask = () => {
+    if (taskToDelete) {
+      setTasks(tasks.filter(t => t.id !== taskToDelete.id));
+      setTaskToDelete(null);
+    }
+  };
+
+  const handleCloseConfirm = () => {
+    setTaskToDelete(null);
   };
 
   return (
@@ -60,7 +74,7 @@ function App() {
         <TaskList 
           tasks={tasks} 
           onEdit={handleOpenModal} 
-          onDelete={handleDeleteTask} 
+          onDelete={requestDeleteTask} 
         />
       </Box>
 
@@ -69,6 +83,14 @@ function App() {
         onClose={handleCloseModal} 
         onSave={handleSaveTask} 
         task={editingTask} 
+      />
+
+      <ConfirmDialog 
+        open={Boolean(taskToDelete)} 
+        onClose={handleCloseConfirm} 
+        onConfirm={confirmDeleteTask} 
+        title="Подтверждение удаления" 
+        message={`Вы уверены, что хотите удалить задачу "${taskToDelete?.title}"? Это действие нельзя будет отменить.`} 
       />
     </Container>
   )
