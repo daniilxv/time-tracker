@@ -19,7 +19,7 @@ const TaskForm = ({ initialData, onSubmit }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Stack spacing={3}>
+      <Stack pt={2} spacing={3}>
         <TextField
           label="Название задачи"
           value={title}

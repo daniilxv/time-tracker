@@ -24,7 +24,7 @@ const TaskList = ({ tasks, onEdit, onDelete }) => {
                     <EditIcon />
                   </IconButton>
                   <IconButton edge="end" onClick={() => onDelete(task.id)}>
-                    <DeleteIcon />
+                    <DeleteIcon color="error"/>
                   </IconButton>
                 </Box>
               }
