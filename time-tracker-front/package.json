@@ -14,7 +14,10 @@
     "@emotion/styled": "^11.13.0",
     "@mui/material": "^6.1.0",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "@emotion/react": "^11.x.x",
+    "@emotion/styled": "^11.x.x",
+    "@mui/material": "^5.x.x"
   },
   "devDependencies": {
     "@types/react": "^19.2.17",
