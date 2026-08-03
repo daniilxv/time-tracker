@@ -1,32 +1,34 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Container, Button, Typography, Box } from '@mui/material'
 import TaskList from './components/TaskList'
 import TaskModal from './components/TaskModal'
 import ConfirmDialog from './components/ConfirmDialog'
+import { taskApi } from './api/taskApi'
 import './App.css'
 
 function App() {
-  // Моковые данные
-  const [tasks, setTasks] = useState([
-    { 
-      id: 1, 
-      title: 'Изучить Material UI', 
-      description: 'Посмотреть документацию по компонентам Dialog и List',
-      startTime: '2023-10-27T10:00',
-      endTime: '2023-10-27T12:00'
-    },
-    { 
-      id: 2, 
-      title: 'Настроить API', 
-      description: 'Создать эндпоинты для получения и сохранения задач',
-      startTime: '2023-10-27T13:00',
-      endTime: '2023-10-27T15:30'
-    },
-  ]);
-
+  const [tasks, setTasks] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
   const [taskToDelete, setTaskToDelete] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Загрузка данных при старте приложения
+  useEffect(() => {
+    loadTasks();
+  }, []);
+
+  const loadTasks = async () => {
+    setIsLoading(true);
+    try {
+      const data = await taskApi.getTasks();
+      setTasks(data);
+    } catch (error) {
+      console.error('Ошибка при загрузке задач:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleOpenModal = (task = null) => {
     setEditingTask(task);
@@ -38,17 +40,18 @@ function App() {
     setEditingTask(null);
   };
 
-  const handleSaveTask = (formData) => {
-    if (editingTask) {
-      setTasks(tasks.map(t => t.id === editingTask.id ? { ...t, ...formData } : t));
-    } else {
-      const newTask = {
-        id: Date.now(),
-        ...formData
-      };
-      setTasks([...tasks, newTask]);
+  const handleSaveTask = async (formData) => {
+    try {
+      if (editingTask) {
+        await taskApi.updateTask(editingTask.id, formData);
+      } else {
+        await taskApi.createTask(formData);
+      }
+      await loadTasks(); // Обновляем список после сохранения
+      handleCloseModal();
+    } catch (error) {
+      console.error('Ошибка при сохранении задачи:', error);
     }
-    handleCloseModal();
   };
 
   const requestDeleteTask = (id) => {
@@ -56,10 +59,15 @@ function App() {
     setTaskToDelete(task);
   };
 
-  const confirmDeleteTask = () => {
+  const confirmDeleteTask = async () => {
     if (taskToDelete) {
-      setTasks(tasks.filter(t => t.id !== taskToDelete.id));
-      setTaskToDelete(null);
+      try {
+        await taskApi.deleteTask(taskToDelete.id);
+        await loadTasks(); // Обновляем список после удаления
+        setTaskToDelete(null);
+      } catch (error) {
+        console.error('Ошибка при удалении задачи:', error);
+      }
     }
   };
 
@@ -83,11 +91,15 @@ function App() {
           Добавить задачу
         </Button>
 
-        <TaskList 
-          tasks={tasks} 
-          onEdit={handleOpenModal} 
-          onDelete={requestDeleteTask} 
-        />
+        {isLoading ? (
+          <Typography variant="body1">Загрузка задач...</Typography>
+        ) : (
+          <TaskList 
+            tasks={tasks} 
+            onEdit={handleOpenModal} 
+            onDelete={requestDeleteTask} 
+          />
+        )}
       </Box>
 
       <TaskModal 
