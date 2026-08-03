@@ -8,8 +8,20 @@ import './App.css'
 function App() {
   // Моковые данные
   const [tasks, setTasks] = useState([
-    { id: 1, title: 'Изучить Material UI', description: 'Посмотреть документацию по компонентам Dialog и List' },
-    { id: 2, title: 'Настроить API', description: 'Создать эндпоинты для получения и сохранения задач' },
+    { 
+      id: 1, 
+      title: 'Изучить Material UI', 
+      description: 'Посмотреть документацию по компонентам Dialog и List',
+      startTime: '2023-10-27T10:00',
+      endTime: '2023-10-27T12:00'
+    },
+    { 
+      id: 2, 
+      title: 'Настроить API', 
+      description: 'Создать эндпоинты для получения и сохранения задач',
+      startTime: '2023-10-27T13:00',
+      endTime: '2023-10-27T15:30'
+    },
   ]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);

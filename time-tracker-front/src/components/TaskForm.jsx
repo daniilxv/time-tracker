@@ -4,17 +4,21 @@ import { TextField, Stack } from '@mui/material';
 const TaskForm = ({ initialData, onSubmit }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
 
   useEffect(() => {
     if (initialData) {
       setTitle(initialData.title);
       setDescription(initialData.description);
+      setStartTime(initialData.startTime || '');
+      setEndTime(initialData.endTime || '');
     }
   }, [initialData]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({ title, description });
+    onSubmit({ title, description, startTime, endTime });
   };
 
   return (
@@ -35,6 +39,26 @@ const TaskForm = ({ initialData, onSubmit }) => {
           multiline
           rows={4}
         />
+        <Stack direction="row" spacing={2}>
+          <TextField
+            label="Время начала"
+            type="datetime-local"
+            value={startTime}
+            onChange={(e) => setStartTime(e.target.value)}
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            required
+          />
+          <TextField
+            label="Время окончания"
+            type="datetime-local"
+            value={endTime}
+            onChange={(e) => setEndTime(e.target.value)}
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            required
+          />
+        </Stack>
       </Stack>
     </form>
   );
