@@ -4,7 +4,6 @@ import TaskList from '../components/TaskList'
 import TaskModal from '../components/TaskModal'
 import ConfirmDialog from '../components/ConfirmDialog'
 import { taskApi } from '../api/taskApi'
-import { authApi } from '../api/authApi'
 import { useNavigate } from 'react-router-dom'
 
 function MainPage() {
@@ -76,23 +75,9 @@ function MainPage() {
     setTaskToDelete(null);
   };
 
-  const handleLogout = () => {
-    authApi.logout();
-    navigate('/login');
-  };
-
   return (
     <Container maxWidth="md">
       <Box sx={{ my: 4, textAlign: 'center' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-          <Typography variant="h3" component="h1">
-            Time Tracker
-          </Typography>
-          <Button variant="outlined" color="secondary" onClick={handleLogout}>
-            Выйти
-          </Button>
-        </Box>
-        
         <Button 
           variant="contained" 
           color="primary" 
